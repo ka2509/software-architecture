@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Exchange Rates</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Currency Exchange Rates</h1>
+        <button id="getRatesBtn">Get Currency Exchange Rates</button>
+
+        <!-- Bảng hiển thị tỷ giá hối đoái -->
+        <table id="currencyTable" style="display:none; margin-top:20px;">
+            <thead>
+                <tr>
+                    <th>Currency Name</th>
+                    <th>Currency Code</th>
+                    <th>Buy</th>
+                    <th>Sell</th>
+                    <th>Transfer</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+
+        <!-- Phần hiển thị lỗi (nếu có) -->
+        <div id="error" style="color: red; margin-top: 20px;"></div>
+    </div>
+
+    <script>
+        document.getElementById("getRatesBtn").addEventListener("click", function() {
+            fetch('/exchange-rate') // Đường dẫn đến file JSON chứa tỷ giá
+                .then(response => response.json())
+                .then(data => {
+                    // Clear the previous table content
+                    const tableBody = document.getElementById("tableBody");
+                    tableBody.innerHTML = "";
+
+                    // Kiểm tra và lấy dữ liệu từ file JSON
+                    if (data.data && Array.isArray(data.data)) {
+                        // Loop through each currency item and append rows to the table
+                        data.data.forEach(item => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${item.CurrencyName}</td>
+                                <td>${item.CurrencyCode}</td>
+                                <td>${item.Buy}</td>
+                                <td>${item.Sell}</td>
+                                <td>${item.Transfer}</td>
+                            `;
+                            tableBody.appendChild(row);
+                        });
+
+                        // Hiện bảng sau khi dữ liệu được tải
+                        document.getElementById("currencyTable").style.display = 'table';
+                        document.getElementById("error").innerHTML = ""; // Xóa thông báo lỗi
+                    } else {
+                        document.getElementById("error").innerHTML = "Error: Invalid data format.";
+                    }
+                })
+                .catch(error => {
+                    document.getElementById("error").innerHTML = "Error fetching data!";
+                });
+        });
+    </script>
+</body>
+</html>

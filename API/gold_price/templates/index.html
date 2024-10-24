@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gold Price Checker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Check Gold Price in Vietnam</h1>
+        <button id="getPriceBtn">Get Gold Price</button>
+        
+        <!-- Bảng hiển thị giá vàng -->
+        <table id="goldPriceTable" style="display:none; margin-top:20px;">
+            <thead>
+                <tr>
+                    <th>Tên giá vàng</th>
+                    <th>Giá mua vào</th>
+                    <th>Giá bán ra</th>
+                    <th>Thời gian</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+        
+        <!-- Phần hiển thị lỗi (nếu có) -->
+        <div id="error" style="color: red; margin-top: 20px;"></div>
+    </div>
+
+    <script>
+        document.getElementById("getPriceBtn").addEventListener("click", function() {
+            fetch('/gold-price')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        // Parse the stringified JSON from the API response
+                        const parsedData = JSON.parse(data.data);
+    
+                        // Extract the gold prices data
+                        const goldItems = parsedData.DataList.Data;
+    
+                        // Clear the previous table content
+                        const tableBody = document.getElementById("tableBody");
+                        tableBody.innerHTML = "";
+    
+                        // Loop through each gold item and append rows to the table
+                        goldItems.forEach(item => {
+                            let rowHTML = '';
+                            // Lặp qua tất cả các thuộc tính của object (để tìm @n_x, @pb_x, @ps_x, @d_x)
+                            for (let key in item) {
+                                if (key.startsWith('@n_')) { // Tìm các thuộc tính chứa tên vàng
+                                    const index = key.split('_')[1]; // Lấy chỉ số của mục hiện tại (ví dụ: 1, 2)
+                                    
+                                    const name = item[`@n_${index}`]; // Tên giá vàng
+                                    const buyPrice = item[`@pb_${index}`]; // Giá mua vào
+                                    const sellPrice = item[`@ps_${index}`]; // Giá bán ra
+                                    const timestamp = item[`@d_${index}`]; // Thời gian nhập giá vàng
+    
+                                    // Tạo một hàng mới trong bảng
+                                    rowHTML += `
+                                        <tr>
+                                            <td>${name}</td>
+                                            <td>${buyPrice} VND</td>
+                                            <td>${sellPrice} VND</td>
+                                            <td>${timestamp}</td>
+                                        </tr>
+                                    `;
+                                }
+                            }
+                            // Thêm hàng vào bảng
+                            tableBody.innerHTML += rowHTML;
+                        });
+    
+                        // Show the table after data is loaded
+                        document.getElementById("goldPriceTable").style.display = 'table';
+                        document.getElementById("error").innerHTML = "";
+                    } else {
+                        document.getElementById("error").innerHTML = "Error: " + data.message;
+                    }
+                })
+                .catch(error => {
+                    document.getElementById("error").innerHTML = "Error fetching data!";
+                });
+        });
+    </script>
+    
+</body>
+</html>
