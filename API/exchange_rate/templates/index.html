@@ -31,7 +31,7 @@
 
     <script>
         document.getElementById("getRatesBtn").addEventListener("click", function() {
-            fetch('/exchange-rate') // Đường dẫn đến file JSON chứa tỷ giá
+            fetch('/exchange-rate?save_to_db=true') // Đường dẫn đến file JSON chứa tỷ giá
                 .then(response => response.json())
                 .then(data => {
                     // Clear the previous table content

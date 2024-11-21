@@ -30,12 +30,13 @@
 
     <script>
         document.getElementById("getPriceBtn").addEventListener("click", function() {
-            fetch('/gold-price')
+            fetch('/gold-price?save_to_db=true')
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === "success") {
                         // Parse the stringified JSON from the API response
-                        const parsedData = JSON.parse(data.data);
+                        
+                        const parsedData = data.data;
     
                         // Extract the gold prices data
                         const goldItems = parsedData.DataList.Data;
