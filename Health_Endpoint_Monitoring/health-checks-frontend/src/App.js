@@ -4,7 +4,7 @@ import './App.css';
 import Sidebar from './components/Sidebar';
 import HealthCheck from './components/HealthCheck'; 
 import Resource from './components/Resource';
-
+import Details from './components/Details';
 function App() {
   return (
     <Router>
@@ -16,6 +16,7 @@ function App() {
             {/* Đặt HealthCheck là route mặc định */}
             <Route path="/" element={<HealthCheck />} />
             <Route path="/Resource"  element={<Resource />} />
+            <Route path="/details/:serviceName" element={<Details />} />
             {/* Các route khác nếu có */}
           </Routes>
         </div>

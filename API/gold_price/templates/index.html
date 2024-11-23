@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gold Price Checker</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -29,6 +30,18 @@
     </div>
 
     <script>
+        // Kết nối WebSocket tới backend
+        const socket = io("http://localhost:5000"); // Thay 'localhost:5000' bằng địa chỉ backend WebSocket của bạn
+
+        // Xử lý sự kiện kết nối WebSocket
+        socket.on("connect", () => {
+            console.log("Connected to WebSocket server.");
+        });
+
+        // Xử lý sự kiện ngắt kết nối
+        socket.on("disconnect", () => {
+            console.log("Disconnected from WebSocket server.");
+        });        
         document.getElementById("getPriceBtn").addEventListener("click", function() {
             fetch('/gold-price?save_to_db=true')
                 .then(response => response.json())

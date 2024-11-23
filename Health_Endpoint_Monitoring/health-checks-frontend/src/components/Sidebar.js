@@ -41,17 +41,7 @@ const Sidebar = () => {
             </Link>
           </li>
 
-          {/* Mục Settings với biểu tượng */}
-          <li className="mb-4">
-            <Link 
-              to="/settings" 
-              className="flex items-center p-2 rounded hover:bg-gray-700 hover:text-white transition duration-300 ease-in-out"
-            >
-              {/* Biểu tượng Settings */}
-              <span className="material-icons mr-3">settings</span>
-              Settings
-            </Link>
-          </li>
+
           
 
           

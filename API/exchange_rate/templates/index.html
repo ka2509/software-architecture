@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Currency Exchange Rates</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script> <!-- Thư viện Socket.IO -->
 </head>
 <body>
     <div class="container">
@@ -12,7 +13,7 @@
         <button id="getRatesBtn">Get Currency Exchange Rates</button>
 
         <!-- Bảng hiển thị tỷ giá hối đoái -->
-        <table id="currencyTable" style="display:none; margin-top:20px;">
+        <table id="currencyTable" style="display:none; margin-top:20px; width: 100%; border-collapse: collapse;">
             <thead>
                 <tr>
                     <th>Currency Name</th>
@@ -30,6 +31,20 @@
     </div>
 
     <script>
+        // Kết nối WebSocket tới backend
+        const socket = io("http://localhost:5001"); // Thay 'localhost:5000' bằng địa chỉ backend WebSocket của bạn
+
+        // Xử lý sự kiện kết nối WebSocket
+        socket.on("connect", () => {
+            console.log("Connected to WebSocket server.");
+        });
+
+        // Xử lý sự kiện ngắt kết nối
+        socket.on("disconnect", () => {
+            console.log("Disconnected from WebSocket server.");
+        });
+
+        // Lấy dữ liệu tỷ giá hối đoái khi nhấn nút
         document.getElementById("getRatesBtn").addEventListener("click", function() {
             fetch('/exchange-rate?save_to_db=true') // Đường dẫn đến file JSON chứa tỷ giá
                 .then(response => response.json())
